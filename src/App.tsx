@@ -1,4 +1,5 @@
 import { type ChangeEvent, useRef } from "react";
+import { processImageWithOpenCV } from "./process";
 
 export const App = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -23,26 +24,14 @@ export const App = () => {
     }
   };
 
-  const processImageWithOpenCV = (canvas: HTMLCanvasElement) => {
-    if ((window as any).cv) {
-      const cv = (window as any).cv;
-      const src = cv.imread(canvas);
-      const dst = new cv.Mat();
-      cv.cvtColor(src, dst, cv.COLOR_RGBA2GRAY);
-      cv.imshow(canvas, dst);
-      src.delete();
-      dst.delete();
-    } else {
-      console.error("OpenCV.js is not loaded");
-    }
-  };
-
   return (
-    <div>
-      <input type="file" accept="image/*" onChange={handleImageChange} />
-      <button onClick={() => processImageWithOpenCV(canvasRef.current!)}>
-        Process
-      </button>
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <div>
+        <input type="file" accept="image/*" onChange={handleImageChange} />
+        <button onClick={() => processImageWithOpenCV(canvasRef.current!)}>
+          Process
+        </button>
+      </div>
       <canvas ref={canvasRef} style={{ border: "1px solid black" }} />
     </div>
   );
